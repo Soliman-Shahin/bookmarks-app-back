@@ -22,7 +22,7 @@ db.on("error", (err: Error) => {
 });
 
 db.once("open", () => {
-  console.log("Connected to MongoDB successfully :)");
+  console.log("[database]: Connected to MongoDB successfully :)");
 });
 
 export { connectToDB };

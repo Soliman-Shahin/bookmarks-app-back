@@ -5,7 +5,10 @@ import { Document, Schema, Model, model, Types } from "mongoose";
 interface BookmarkDocument extends Document {
   title: string;
   url: string;
-  tags?: string[];
+  tags?: {
+    title: string;
+    id: any;
+  };
   description?: string;
   image?: string;
   _userId: any;
@@ -22,7 +25,13 @@ const bookmarkSchema = new Schema<BookmarkDocument>(
   {
     title: { type: String, required: true },
     url: { type: String, required: true },
-    tags: { type: [String] },
+    tags: {
+      title: {
+        type: String,
+        unique: true,
+      },
+      id: Types.ObjectId,
+    },
     description: { type: String },
     image: { type: String },
     _userId: { type: Types.ObjectId, required: true },
