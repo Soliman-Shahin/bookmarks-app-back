@@ -4,6 +4,7 @@ import { User } from "../models/index";
 import {
   getAllBookmarks,
   getBookmark,
+  getBookmarkIcon,
   createBookmark,
   insertManyBookmarks,
   findBookmarkById,
@@ -52,6 +53,11 @@ router.get(
   "/bookmarks",
   authenticate,
   getAllBookmarks as unknown as RequestHandler
+);
+router.post(
+  "/favicon",
+  authenticate,
+  getBookmarkIcon as unknown as RequestHandler
 );
 router.get("/:id", authenticate, getBookmark as unknown as RequestHandler);
 router.post(

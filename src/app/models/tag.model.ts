@@ -16,7 +16,7 @@ interface TagModel extends Model<TagDocument> {
 // Define the schema for the tag document
 const tagSchema = new Schema<TagDocument>(
   {
-    title: { type: String, required: true, unique: true },
+    title: { type: String, required: true },
     _userId: { type: Types.ObjectId, required: true },
   },
   { timestamps: true }

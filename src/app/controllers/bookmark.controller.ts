@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { Document } from "mongoose";
 import { BookmarkModel, Bookmark } from "../models/index";
 import { handleError } from "../shared/helper";
+const favicon = require("favicon");
 
 interface CustomRequest extends Request {
   user_id: any;
@@ -28,6 +29,29 @@ interface BookmarkResponse {
   data: (typeof Bookmark)[];
   options: Options;
 }
+
+// Returns the favicon URL of a given website using the favicon module
+async function getFavicon(url: string): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
+    favicon(url, (err: any, iconUrl: string | PromiseLike<string>) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(iconUrl);
+      }
+    });
+  });
+}
+
+const getBookmarkIcon = async (req: CustomRequest, res: Response) => {
+  const url = req.body.url;
+  try {
+    const iconUrl = await getFavicon(url);
+    res.status(200).json(iconUrl);
+  } catch (err) {
+    handleError(res, err);
+  }
+};
 
 // Define a helper function that takes the query parameters and options as arguments and returns the response object
 const getResponseObject = async (
@@ -150,11 +174,14 @@ const createBookmark = async (req: CustomRequest, res: Response) => {
       title,
       url,
       description,
+      tags,
+      icon,
     }: {
       title: string;
       url: string;
       description: string;
-      image: string;
+      tags?: string[];
+      icon?: string;
     } = req.body;
     const userId = req.user_id;
 
@@ -162,6 +189,8 @@ const createBookmark = async (req: CustomRequest, res: Response) => {
       title,
       url,
       description,
+      tags,
+      icon,
       _userId: userId,
     });
     const bookmarkDoc: Document = await newBookmark.save();
@@ -184,7 +213,7 @@ const updateBookmark = async (req: CustomRequest, res: Response) => {
       url?: string;
       description?: string;
       tags?: any;
-      image?: string;
+      icon?: string;
     } = req.body;
     // The bookmark to update is already attached to the request object by the middleware function
     const bookmark: any = req.bookmark;
@@ -234,7 +263,7 @@ const insertManyBookmarks = async (req: CustomRequest, res: Response) => {
       url?: string;
       tags?: string[];
       description: string;
-      image?: string;
+      icon?: string;
     }[] = req.body;
     const userId = req.user_id;
 
@@ -258,5 +287,6 @@ export {
   deleteBookmark,
   findBookmarkById,
   getBookmark,
+  getBookmarkIcon,
   insertManyBookmarks,
 };

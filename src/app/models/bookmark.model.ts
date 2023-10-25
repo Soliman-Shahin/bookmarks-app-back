@@ -7,7 +7,7 @@ interface BookmarkDocument extends Document {
   url: string;
   tags?: string[];
   description?: string;
-  image?: string;
+  icon?: string;
   _userId: any;
 }
 
@@ -22,15 +22,15 @@ const bookmarkSchema = new Schema<BookmarkDocument>(
   {
     title: { type: String, required: true },
     url: { type: String, required: true },
-    tags: [{ type: String, unique: true }],
+    tags: { type: [String] },
     description: { type: String },
-    image: { type: String },
+    icon: { type: String },
     _userId: { type: Types.ObjectId, required: true },
   },
   { timestamps: true }
 );
 
-// Create an index on the title and url fields
+// Create an index on the title, url fields
 bookmarkSchema.index({ title: 1, url: 1 });
 
 // Add a pre-validation hook to check the url format
